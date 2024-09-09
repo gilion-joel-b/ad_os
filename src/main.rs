@@ -7,10 +7,12 @@ mod system_table;
 mod linear_text_buffer;
 
 use uefi::{ImageHandle, SystemTable};
+use macros::entry;
 
 
 #[no_mangle]
-pub extern "efiapi" fn efi_main(image_handle: ImageHandle, system_table: *const SystemTable) {
+#[entry]
+pub extern "efiapi" fn efi_main(image_handle: ImageHandle, system_table: SystemTableRefined) {
 
 }
 
