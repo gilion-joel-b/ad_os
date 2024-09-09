@@ -1,4 +1,4 @@
 struct TextBuffer {
-    buffer: Vec<u8>,
+    buffer: [[u8; 80]; 25],
     cursor: usize,
 }
