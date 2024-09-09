@@ -3,6 +3,7 @@
 
 mod uefi;
 mod macros;
+mod system_table;
 mod linear_text_buffer;
 
 use uefi::{ImageHandle, SystemTable};
