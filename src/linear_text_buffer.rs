@@ -1,4 +1,5 @@
 use crate::uefi::TextOutputProtocol;
+use spin::Lazy;
 
 struct TextBuffer {
     chars: [u16; 256],
@@ -20,3 +21,7 @@ impl LinearTextWriter {
     }
 }
 
+static WRITER: Lazy<LinearTextWriter> = Lazy::new(||LinearTextWriter {
+    buffer: TextBuffer { chars: [0; 256] },
+    output: 0 as *const TextOutputProtocol,
+});
