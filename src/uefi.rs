@@ -1,3 +1,4 @@
+#[repr(C)]
 pub struct SystemTable{
     header: [u8;24],
     firmware_vendor: u64,
