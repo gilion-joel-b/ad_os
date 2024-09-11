@@ -38,6 +38,10 @@ pub type ImageHandle = u64;
 
 static SYSTEM_TABLE: AtomicPtr<SystemTable> = AtomicPtr::new(ptr::null_mut());
 
-pub fn set_system_table(system_table: *const SystemTable) {
+pub fn init_system_table(system_table: *const SystemTable) {
     SYSTEM_TABLE.store(system_table.cast_mut(), SeqCst);
+}
+
+pub fn system_table() -> &'static SystemTable {
+    unsafe { SYSTEM_TABLE.load(SeqCst).as_ref().unwrap() }
 }

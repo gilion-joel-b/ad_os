@@ -1,4 +1,4 @@
-use crate::uefi::TextOutputProtocol;
+use crate::uefi::{system_table, TextOutputProtocol};
 use spin::Lazy;
 
 struct TextBuffer {
@@ -7,7 +7,6 @@ struct TextBuffer {
 
 struct LinearTextWriter {
     buffer: TextBuffer,
-    output: *const TextOutputProtocol,
 }
 
 impl LinearTextWriter {
@@ -15,13 +14,13 @@ impl LinearTextWriter {
         string.chars().enumerate().for_each(|(i, c)| {
             self.buffer.chars[i] = c as u16;
         });
+        let output = system_table().output;
         unsafe {
-            ((*self.output).output_string)(self.output, self.buffer.chars.as_ptr());
+            ((*output).output_string)(output, self.buffer.chars.as_ptr());
         }
     }
 }
 
-static WRITER: Lazy<LinearTextWriter> = Lazy::new(||LinearTextWriter {
+pub static WRITER: Lazy<LinearTextWriter> = Lazy::new(||LinearTextWriter {
     buffer: TextBuffer { chars: [0; 256] },
-    output: 0 as *const TextOutputProtocol,
 });
