@@ -1,11 +1,12 @@
 use crate::uefi::{system_table, TextOutputProtocol};
-use spin::Lazy;
+use core::fmt;
+use spin::{Lazy, Mutex};
 
 struct TextBuffer {
     chars: [u16; 256],
 }
 
-struct LinearTextWriter {
+pub struct LinearTextWriter {
     buffer: TextBuffer,
 }
 
@@ -21,6 +22,32 @@ impl LinearTextWriter {
     }
 }
 
-pub static WRITER: Lazy<LinearTextWriter> = Lazy::new(||LinearTextWriter {
-    buffer: TextBuffer { chars: [0; 256] },
+impl fmt::Write for LinearTextWriter {
+    fn write_str(&mut self, string: &str) -> fmt::Result {
+        self.write(string);
+        Ok(())
+    }
+}
+
+pub static WRITER: Lazy<Mutex<LinearTextWriter>> = Lazy::new(|| {
+    Mutex::new(LinearTextWriter {
+        buffer: TextBuffer { chars: [0; 256] },
+    })
 });
+
+#[macro_export]
+macro_rules! print {
+    ($($arg:tt)*) => ($crate::linear_text_buffer::_print(format_args!($($arg)*)));
+}
+
+#[macro_export]
+macro_rules! println {
+    () => ($crate::print!("\n"));
+    ($($arg:tt)*) => ($crate::print!("{}\n", format_args!($($arg)*)));
+}
+
+pub fn _print(args: fmt::Arguments) {
+    use core::fmt::Write;
+    WRITER.lock().write_fmt(args).unwrap();
+}
+
