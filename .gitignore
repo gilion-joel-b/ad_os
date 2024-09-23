@@ -1,3 +1,5 @@
 /macros/target
 /uefi/target
 /target
+bios32.bin
+bios64.bin

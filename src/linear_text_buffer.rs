@@ -1,4 +1,4 @@
-use crate::uefi::{system_table, TextOutputProtocol};
+use crate::uefi::system_table;
 use core::fmt;
 use spin::{Lazy, Mutex};
 
