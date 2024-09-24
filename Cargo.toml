@@ -1,3 +1,5 @@
+cargo-features = ["profile-rustflags"]
+
 [package]
 name = "add-thing"
 version = "0.1.0"
@@ -5,3 +7,9 @@ edition = "2021"
 
 [dependencies]
 spin = "0.9.8"
+
+[profile.dev]
+rustflags = [
+    "-C", "link-arg=-Tlinker.ld",
+]
+
